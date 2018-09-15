@@ -2,7 +2,10 @@
 
 namespace app\entities;
 
+use app\forms\PatternForm;
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "paterns".
@@ -14,6 +17,30 @@ use Yii;
  */
 class Patterns extends \yii\db\ActiveRecord
 {
+
+    public static function create(PatternForm $form):self
+    {
+      $patterns=new static();
+      $patterns->text=$form->text;
+      return $patterns;
+    }
+
+    public function edit(PatternForm $form):void
+    {
+      $this->text=$form->text;
+    }
+
+    public function behaviors()
+    {
+        return [
+            'time'=>[
+                'class' =>  TimestampBehavior::class,
+                'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => 'created_at',
+                'value' => new Expression('NOW()'),
+            ],
+        ];
+    }
     /**
      * {@inheritdoc}
      */
@@ -25,25 +52,5 @@ class Patterns extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
-    {
-        return [
-            [['text'], 'required'],
-            [['created_at', 'updated_at'], 'safe'],
-            [['text'], 'string', 'max' => 255],
-        ];
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'text' => 'Text',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
-        ];
-    }
 }

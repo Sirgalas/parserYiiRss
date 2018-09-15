@@ -3,11 +3,13 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model app\entities\Link */
+/* @var $link app\entities\Link
+ *@var $model app\forms\LinkForm
+ */
 
 $this->title = 'Update Link: ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Links', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
+$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $link->id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
 <div class="link-update">

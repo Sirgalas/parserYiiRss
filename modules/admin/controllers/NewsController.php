@@ -2,6 +2,8 @@
 
 namespace app\modules\admin\controllers;
 
+use app\forms\NewsForm;
+use app\services\admin\NewsService;
 use Yii;
 use app\entities\News;
 use app\modules\admin\search\NewsSearch;
@@ -14,6 +16,14 @@ use yii\filters\VerbFilter;
  */
 class NewsController extends Controller
 {
+    public $service;
+
+    public function __construct(string $id, $module,NewsService $service, array $config = [])
+    {
+    parent::__construct($id, $module, $config);
+    $this->service=$service;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -64,14 +74,18 @@ class NewsController extends Controller
      */
     public function actionCreate()
     {
-        $model = new News();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        $form = new NewsForm();
+        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
+            try{
+                $news=$this->service->create($form);
+                return $this->redirect(['view', 'id' => $news->id]);
+            }catch (\RuntimeException $e){
+                Yii::error($e);
+                Yii::$app->session->setFlash('error','Новость не создалась');
+            }
         }
-
         return $this->render('create', [
-            'model' => $model,
+            'model' => $form,
         ]);
     }
 
@@ -84,14 +98,20 @@ class NewsController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        $news = $this->findModel($id);
+        $form = new NewsForm($news);
+        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
+            try{
+                $news=$this->service->create($form);
+                return $this->redirect(['view', 'id' => $news->id]);
+            }catch (\RuntimeException $e){
+                Yii::error($e);
+                Yii::$app->session->setFlash('error','Изменения  не сохранились');
+            }
         }
-
         return $this->render('update', [
-            'model' => $model,
+            'model' => $form,
+            'news'=>$news
         ]);
     }
 
@@ -104,8 +124,7 @@ class NewsController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
+        $this->service->remove($id);
         return $this->redirect(['index']);
     }
 

@@ -2,7 +2,10 @@
 
 namespace app\entities;
 
+use app\forms\CategoryForm;
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "category".
@@ -16,6 +19,31 @@ use Yii;
  */
 class Category extends \yii\db\ActiveRecord
 {
+
+    public static function create(CategoryForm $form):self
+    {
+       $category= new static();
+       $category->title=$form->title;
+       return $category;
+    }
+
+    public function edit(CategoryForm $form):void
+    {
+        $this->title=$form->title;
+    }
+
+
+    public function behaviors()
+    {
+        return [
+            'time'=>[
+                'class' => TimestampBehavior::class,
+                'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => 'created_at',
+                'value' => new Expression('NOW()'),
+            ],
+        ];
+    }
     /**
      * {@inheritdoc}
      */
@@ -24,30 +52,7 @@ class Category extends \yii\db\ActiveRecord
         return 'category';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
-    {
-        return [
-            [['title'], 'required'],
-            [['created_at', 'updated_at'], 'safe'],
-            [['title'], 'string', 'max' => 255],
-        ];
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'title' => 'Title',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
-        ];
-    }
 
     /**
      * @return \yii\db\ActiveQuery

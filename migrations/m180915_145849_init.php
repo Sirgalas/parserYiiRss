@@ -35,15 +35,16 @@ class m180915_145849_init extends Migration
             'text'=>$this->string()->notNull(),
             'created_at'=>$this->dateTime(),
             'updated_at'=>$this->dateTime()
-        ]);
+        ],$tableOptions);
 
         $this->createTable('{{%link}}',[
             'id'=>$this->primaryKey(),
             'name'=>$this->string()->notNull(),
             'url'=>$this->string()->notNull(),
+            'parser_date'=>$this->integer(),
             'created_at'=>$this->dateTime(),
             'updated_at'=>$this->dateTime()
-        ]);
+        ],$tableOptions);
 
         $this->createTable('{{%news}}',[
             'id'=>$this->primaryKey(),
@@ -56,14 +57,14 @@ class m180915_145849_init extends Migration
             'guid'=>$this->string(),
             'pubDate'=>$this->dateTime(),
             'source'=>$this->string()
-        ]);
+        ],$tableOptions);
 
         $this->createTable('{{%category}}',[
             'id'=>$this->primaryKey(),
             'title'=>$this->string()->notNull(),
             'created_at'=>$this->dateTime(),
             'updated_at'=>$this->dateTime(),
-        ]);
+        ],$tableOptions);
 
         $this->createTable('{{%news_category}}',[
            'category_id'=>$this->integer(),
@@ -104,9 +105,7 @@ class m180915_145849_init extends Migration
        $this->dropTable('{{%news}}');
        $this->dropTable('{{%link}}');
        $this->dropTable('{{%paterns}}');
-       $this->dropTable('{{%paterns}}');
        $this->dropTable('{{%user}}');
-
 
     }
 

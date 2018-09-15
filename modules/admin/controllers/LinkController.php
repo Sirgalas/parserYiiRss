@@ -2,6 +2,8 @@
 
 namespace app\modules\admin\controllers;
 
+use app\forms\LinkForm;
+use app\services\admin\LinkService;
 use Yii;
 use app\entities\Link;
 use app\modules\admin\search\LinkSearch;
@@ -14,6 +16,15 @@ use yii\filters\VerbFilter;
  */
 class LinkController extends Controller
 {
+
+    public $service;
+
+    public function __construct(string $id,  $module,LinkService $service, array $config = [])
+    {
+        parent::__construct($id, $module, $config);
+        $this->service=$service;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -64,14 +75,18 @@ class LinkController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Link();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        $form = new LinkForm();
+        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
+            try{
+                $link=$this->service->create($form);
+                return $this->redirect(['view', 'id' => $link->id]);
+            }catch (\RuntimeException $e){
+                Yii::error($e);
+                Yii::$app->session->setFlash('error','Ссылка не сохранилась');
+            }
         }
-
         return $this->render('create', [
-            'model' => $model,
+            'model' => $form,
         ]);
     }
 
@@ -84,14 +99,20 @@ class LinkController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        $link = $this->findModel($id);
+        $form= new LinkForm($link);
+        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
+            try{
+                $this->service->edit($link,$form);
+                return $this->redirect(['view', 'id' => $link->id]);
+            }catch (\RuntimeException $e){
+                Yii::error($e);
+                Yii::$app->session->setFlash('Изменения не применились');
+            }
         }
-
         return $this->render('update', [
-            'model' => $model,
+            'model' => $form,
+            'link'=>$link
         ]);
     }
 
@@ -104,8 +125,7 @@ class LinkController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
+        $this->service->remove($id);
         return $this->redirect(['index']);
     }
 

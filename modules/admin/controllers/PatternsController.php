@@ -2,6 +2,8 @@
 
 namespace app\modules\admin\controllers;
 
+use app\forms\PatternForm;
+use app\services\admin\PatternsService;
 use Yii;
 use app\entities\Patterns;
 use app\modules\admin\search\PatternsSearch;
@@ -14,6 +16,14 @@ use yii\filters\VerbFilter;
  */
 class PatternsController extends Controller
 {
+
+    public $service;
+
+    public function __construct(string $id, $module,PatternsService $service, array $config = [])
+    {
+        parent::__construct($id, $module, $config);
+        $this->service=$service;
+    }
     /**
      * {@inheritdoc}
      */
@@ -64,14 +74,19 @@ class PatternsController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Patterns();
+        $form = new PatternForm();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
+            try{
+                $pattern=$this->service->create($form);
+                return $this->redirect(['view', 'id' => $pattern->id]);
+            }catch (\RuntimeException  $e){
+                Yii::error($e);
+                Yii::$app->session->setFlash('error','Шаблон не сохранился');
+            }
         }
-
         return $this->render('create', [
-            'model' => $model,
+            'model' => $form,
         ]);
     }
 
@@ -84,14 +99,21 @@ class PatternsController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $pattern = $this->findModel($id);
+        $form=new PatternForm($pattern);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
+            try{
+                $this->service->edit($pattern,$form);
+                return $this->redirect(['view', 'id' => $form->id]);
+            }catch (\RuntimeException $e) {
+                Yii::error($e);
+                Yii::$app->session->setFlash('error','Изменения не применились');
+            }
         }
-
         return $this->render('update', [
-            'model' => $model,
+            'model' => $form,
+            'pattern'=>$pattern
         ]);
     }
 

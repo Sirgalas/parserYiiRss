@@ -12,31 +12,20 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="news-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+   <div class="box">
+       <div class="box box-body">
+           <?= GridView::widget([
+               'dataProvider' => $dataProvider,
+               'filterModel' => $searchModel,
+               'columns' => [
+                   ['class' => 'yii\grid\SerialColumn'],
 
-    <p>
-        <?= Html::a('Create News', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+                   'id',
+                   'title',
+                   ['class' => 'yii\grid\ActionColumn'],
+               ],
+           ]); ?>
+       </div>
+   </div>
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            'id',
-            'title',
-            'link',
-            'description',
-            'author',
-            //'comments',
-            //'enclosure',
-            //'guid',
-            //'pubDate',
-            //'source',
-
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
 </div>

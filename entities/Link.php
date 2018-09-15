@@ -2,7 +2,10 @@
 
 namespace app\entities;
 
+use app\forms\LinkForm;
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "link".
@@ -10,11 +13,39 @@ use Yii;
  * @property int $id
  * @property string $name
  * @property string $url
+ * @property integer $parser_date
  * @property string $created_at
  * @property string $updated_at
  */
 class Link extends \yii\db\ActiveRecord
 {
+
+    public static function create(LinkForm $form):Link
+    {
+        $link=new static();
+        $link->name=$form->name;
+        $link->url=$form->url;
+        return $link;
+    }
+
+    public  function edit(LinkForm $form):void
+    {
+        $this->name=$form->name;
+        $this->url=$form->url;
+    }
+
+    public function behaviors()
+    {
+        return [
+            'time'=>[
+                'class' => TimestampBehavior::class,
+                'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => 'created_at',
+                'value' => new Expression('NOW()'),
+            ],
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -26,26 +57,5 @@ class Link extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
-    {
-        return [
-            [['name', 'url'], 'required'],
-            [['created_at', 'updated_at'], 'safe'],
-            [['name', 'url'], 'string', 'max' => 255],
-        ];
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'name' => 'Name',
-            'url' => 'Url',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
-        ];
-    }
 }

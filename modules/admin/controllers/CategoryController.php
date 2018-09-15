@@ -2,6 +2,8 @@
 
 namespace app\modules\admin\controllers;
 
+use app\forms\CategoryForm;
+use app\services\admin\CategoryService;
 use Yii;
 use app\entities\Category;
 use app\modules\admin\search\CategorySearch;
@@ -14,6 +16,15 @@ use yii\filters\VerbFilter;
  */
 class CategoryController extends Controller
 {
+
+    public $service;
+
+    public function __construct(string $id, $module,CategoryService $service,  array $config = [])
+    {
+        parent::__construct($id, $module, $config);
+        $this->service=$service;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -21,7 +32,7 @@ class CategoryController extends Controller
     {
         return [
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
                 ],
@@ -64,14 +75,18 @@ class CategoryController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Category();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        $form= new CategoryForm();
+        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
+           try{
+               $user=$this->service->create($form);
+               return $this->redirect(['view', 'id' => $user->id]);
+           }catch (\RuntimeException $e){
+               Yii::error($e);
+               Yii::$app->session->setFlash('error','Произошла ошибка сохранения');
+           }
         }
-
         return $this->render('create', [
-            'model' => $model,
+            'model' => $form,
         ]);
     }
 
@@ -84,14 +99,20 @@ class CategoryController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        $category = $this->findModel($id);
+        $form= new CategoryForm($category);
+        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
+            try{
+                $this->service->edit($category,$form);
+                return $this->redirect(['view', 'id' => $category->id]);
+            }catch (\RuntimeException $e){
+                Yii::error($e);
+                Yii::$app->session->setFlash('error','Изменения не применились');
+            }
         }
-
         return $this->render('update', [
-            'model' => $model,
+            'model' => $form,
+            'category'=>$category
         ]);
     }
 
@@ -104,7 +125,7 @@ class CategoryController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $this->service->remove($id);
 
         return $this->redirect(['index']);
     }
