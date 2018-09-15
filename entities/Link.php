@@ -25,6 +25,7 @@ class Link extends \yii\db\ActiveRecord
         $link=new static();
         $link->name=$form->name;
         $link->url=$form->url;
+        $link->parser_date=0;
         return $link;
     }
 
@@ -33,6 +34,8 @@ class Link extends \yii\db\ActiveRecord
         $this->name=$form->name;
         $this->url=$form->url;
     }
+
+
 
     public function behaviors()
     {

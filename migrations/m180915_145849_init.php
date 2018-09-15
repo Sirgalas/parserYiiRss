@@ -89,6 +89,7 @@ class m180915_145849_init extends Migration
             'id',
             'CASCADE');
 
+
     }
 
     /**
