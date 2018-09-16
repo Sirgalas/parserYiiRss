@@ -9,7 +9,7 @@ use yii\widgets\Pjax;
  */
 
 
-$title = $category === null ? 'Welcome!' : $category->title;
+$title = (!empty($category))? 'Welcome!' : $category->title;
 $this->title = Html::encode($title);
 ?>
 <h1><?= Html::encode($title) ?></h1>
