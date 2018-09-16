@@ -28,11 +28,12 @@ class NewsRepository
         $news->delete();
     }
 
-    public function newQuery($id){
-        $newQuery = News::find();
+    public function newQuery($id)
+    {
+        $newQuery = News::find()->where(['is_active'=>News::ACTIVE]);
         if ($id !== null && isset($categories[$id])) {
             $id = ArrayHelper::getColumn(NewsCategory::find()->where(['category_id'=>$id])->all(),'new_id');
-            $newQuery->where(['in','id', $id]);
+            $newQuery->andWhere(['in','id', $id]);
         }
         return $newQuery;
     }
