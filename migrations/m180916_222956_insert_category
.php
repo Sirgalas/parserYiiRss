@@ -6,8 +6,7 @@ use app\entities\Category;
  * Class m180916_222956_insert_category
 
  */
-class m180916_222956_insert_category
-    extends Migration
+class m180916_222956_insert_category extends Migration
 {
     /**
      * {@inheritdoc}
