@@ -15,7 +15,8 @@ class m180916_222956_insert_category extends Migration
     {
         $this->batchInsert(Category::tableName(), ['title'],[
             ['Бизнес'],
-            ['ГЧП']]);
+            ['ГЧП']
+        ]);
     }
 
     /**
