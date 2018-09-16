@@ -41,6 +41,7 @@ class ParserController extends Controller
         {
             $xml=$this->XmlFile($link->url);
             $arraySave=$this->service->feed($xml->channel);
+            $this->service->saveAll($arraySave);
         }
     }
 

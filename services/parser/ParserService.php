@@ -22,13 +22,13 @@ class ParserService
         $this->patterns=ArrayHelper::getColumn(Patterns::getAll(),'text');
     }
 
-    public function feed($channel):array
+    public function feed($channel)//:array
     {
-
+        $arrayFeed=[];
         foreach ($channel->item as $item){
-            $arrayFeed=[];
+
             if(!$this->strposinDescription($item->description,$this->patterns))
-                break;
+                continue;
             $arrayFeed[]=[
                 (string)$item->title[0],
                 (string)$item->link[0],
@@ -41,14 +41,14 @@ class ParserService
 
     public function saveAll(array $insert)
     {
-        Yii::$app->db->createCommand()->batchInsert(News::tableName(),['title','url','description'],$insert)->execute();
+        Yii::$app->db->createCommand()->batchInsert(News::tableName(),['title','link','description'],$insert)->execute();
     }
 
 
     private function strposinDescription($haystack, $needles) {
-        if ( is_array($needles) )
-            return false;
 
+        if ( !is_array($needles) )
+            return false;
         foreach ($needles as $str) {
             if($pos = strpos($haystack, $str))
                 return true;

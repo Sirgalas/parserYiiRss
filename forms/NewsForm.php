@@ -9,13 +9,15 @@
 namespace app\forms;
 use app\entities\News;
 use yii\base\Model;
-
+use yii\helpers\ArrayHelper;
 /**
  * Class NewsForm
  * @package app\forms
  * @property string $title
  * @property string $link
  * @property string $description
+ * @property  array $categories_ids
+ * @property boolean $is_active
  *
  */
 class NewsForm extends Model
@@ -24,6 +26,8 @@ class NewsForm extends Model
     public $title;
     public $link;
     public $description;
+    public $categories_ids;
+    public $is_active;
 
     public function __construct(News $news=null,$config = [])
     {
@@ -32,12 +36,8 @@ class NewsForm extends Model
             $this->title=$news->title;
             $this->link=$news->link;
             $this->description=$news->description;
-            $this->author=$news->author;
-            $this->comments=$news->comments;
-            $this->enclosure=$news->enclosure;
-            $this->guid=$news->guid;
-            $this->source=$news->source;
-            $this->pubDate=$news->pubDate;
+            $this->categories_ids=ArrayHelper::getColumn($news->categories,'id');
+            $this->is_active=$news->is_active;
         }
     }
 
@@ -49,6 +49,8 @@ class NewsForm extends Model
         return [
             [['title', 'link','description'], 'required'],
             [['title', 'link', 'description'], 'string', 'max' => 255],
+            [['categories_ids'], 'each', 'rule' => ['integer']],
+            ['is_active','boolean']
         ];
     }
 

@@ -52,7 +52,9 @@ class Category extends \yii\db\ActiveRecord
         return 'category';
     }
 
-
+    public static function getAll(){
+        return self::find()->all();
+    }
 
     /**
      * @return \yii\db\ActiveQuery

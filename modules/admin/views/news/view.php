@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $model app\entities\News */
@@ -31,12 +32,25 @@ $this->params['breadcrumbs'][] = $this->title;
                     'title',
                     'link',
                     'description',
-                    'author',
-                    'comments',
-                    'enclosure',
-                    'guid',
-                    'pubDate:datetime',
-                    'source',
+                    [
+
+                        'attribute'=>'is_active',
+                        'value'=>function($model){
+                            if($model->is_active)
+                                return 'Новость выводится';
+                            return 'Новость в буфере';
+                        },
+
+                    ],
+                    [
+                        'attribute'=>'categories',
+                        'value'=>function()use($model){
+                            /**
+                             * @var $model app\entities\News;
+                             */
+                            return implode(' ,',ArrayHelper::getColumn($model->categories,'title'));
+                        }
+                    ],
                 ],
             ]) ?>
         </div>

@@ -2,7 +2,9 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-
+use kartik\select2\Select2;
+use app\entities\Category;
+use yii\helpers\ArrayHelper;
 /* @var $this yii\web\View */
 /* @var $model app\entities\News */
 /* @var $form yii\widgets\ActiveForm */
@@ -18,17 +20,18 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'author')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model,'is_active')->dropDownList(\app\entities\News::$staus) ?>
 
-    <?= $form->field($model, 'comments')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'categories_ids')->widget(Select2::class, [
+    'data' => ArrayHelper::map(Category::getAll(),'id','title'),
+    'language' => 'ru',
+    'options' => ['placeholder' => 'Выбирите категории'],
+    'pluginOptions' => [
+        'allowClear' => true,
+        'multiple' => true,
+    ],
+]); ?>
 
-    <?= $form->field($model, 'enclosure')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'guid')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'pubDate')->textInput() ?>
-
-    <?= $form->field($model, 'source')->textInput(['maxlength' => true]) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

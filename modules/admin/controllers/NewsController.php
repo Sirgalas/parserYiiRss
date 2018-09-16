@@ -109,7 +109,7 @@ class NewsController extends Controller
                 Yii::$app->session->setFlash('error','Изменения  не сохранились');
             }
         }
-        return $this->render('update', [
+        return $this->renderAjax('update', [
             'model' => $form,
             'news'=>$news
         ]);
