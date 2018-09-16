@@ -102,7 +102,7 @@ class NewsController extends Controller
         $form = new NewsForm($news);
         if ($form->load(Yii::$app->request->post()) && $form->validate()) {
             try{
-                $news=$this->service->create($form);
+                $this->service->edit($news,$form);
                 return $this->redirect(['view', 'id' => $news->id]);
             }catch (\RuntimeException $e){
                 Yii::error($e);

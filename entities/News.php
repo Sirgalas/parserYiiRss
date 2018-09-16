@@ -4,6 +4,7 @@ namespace app\entities;
 
 use app\forms\NewsForm;
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "news".
@@ -27,7 +28,7 @@ class News extends \yii\db\ActiveRecord
         self::NOT_ACTIVE=>'Новость в буфере',
         self::ACTIVE=>'Новость выводится',
     ];
-    public $categories_ids;
+    //public $categories_ids;
     public static function create(NewsForm $form): self
     {
         $news= new static();
@@ -35,6 +36,7 @@ class News extends \yii\db\ActiveRecord
         $news->link=$form->link;
         $news->description=$form->description;
         $news->categories_ids=$form->categories_ids;
+        $news->is_active=$form->is_active;
         return $news;
     }
 
@@ -45,6 +47,7 @@ class News extends \yii\db\ActiveRecord
         $this->link=$form->link;
         $this->description=$form->description;
         $this->categories_ids=$form->categories_ids;
+        $this->is_active=$form->is_active;
 
     }
     /**
@@ -83,6 +86,16 @@ class News extends \yii\db\ActiveRecord
     public function getStatus()
     {
         return self::$staus[$this->is_active];
+    }
+
+    public static function listAll($keyField = 'id', $valueField = 'name', $asArray = true)
+    {
+        $query = static::find();
+        if ($asArray) {
+            $query->select([$keyField, $valueField])->asArray();
+        }
+
+        return ArrayHelper::map($query->all(), $keyField, $valueField);
     }
 
 }
