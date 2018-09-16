@@ -2,8 +2,15 @@
 
 namespace app\controllers;
 
+use app\entities\Category;
+use app\entities\News;
+use app\entities\NewsCategory;
+use app\repositories\admin\NewsRepository;
+use app\services\admin\CategoryService;
 use Yii;
+use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
@@ -12,6 +19,15 @@ use app\models\ContactForm;
 
 class SiteController extends Controller
 {
+    public $categoryService;
+    public $newsRepository;
+    public function __construct(string $id,  $module,CategoryService $service,NewsRepository $repository, array $config = [])
+    {
+        parent::__construct($id, $module, $config);
+        $this->categoryService=$service;
+        $this->newsRepository=$repository;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -59,44 +75,24 @@ class SiteController extends Controller
      *
      * @return string
      */
-    public function actionIndex()
+    public function actionIndex($id = null)
     {
-        return $this->render('index');
-    }
 
-    /**
-     * Login action.
-     *
-     * @return Response|string
-     */
-    public function actionLogin()
-    {
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
-        }
+        $categories = Category::find()->indexBy('id')->orderBy('id')->all();
 
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
-        }
+        $newsDataProvider = new ActiveDataProvider([
+            'query' => $this->newsRepository->newQuery($id),
+            'pagination' => [
+                'pageSize' => 2,
+            ],
+        ]);
 
-        $model->password = '';
-        return $this->render('login', [
-            'model' => $model,
+        return $this->render('index',[
+            'menuItems' => $this->categoryService->getMenuItems($categories, isset($id) ?: null),
+            'newsDataProvider' => $newsDataProvider,
         ]);
     }
 
-    /**
-     * Logout action.
-     *
-     * @return Response
-     */
-    public function actionLogout()
-    {
-        Yii::$app->user->logout();
-
-        return $this->goHome();
-    }
 
     /**
      * Displays contact page.
@@ -125,4 +121,6 @@ class SiteController extends Controller
     {
         return $this->render('about');
     }
+
+
 }

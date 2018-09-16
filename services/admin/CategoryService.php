@@ -42,4 +42,17 @@ class CategoryService
         $category=$this->repository->get($id);
         $this->repository->remove($category);
     }
+
+    public function getMenuItems($categories, $activeId = null)
+    {
+        $menuItems = [];
+        foreach ($categories as $category) {
+            $menuItems[$category->id] = [
+                'active' => $activeId === $category->id,
+                'label' => $category->title,
+                'url' => ['site/index', 'id' => $category->id],
+            ];
+        }
+        return $menuItems;
+    }
 }
