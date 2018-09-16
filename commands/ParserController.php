@@ -3,17 +3,20 @@
 
 namespace app\commands;
 
+use app\entities\Patterns;
 use app\services\parser\ParserService;
 use app\repositories\parser\ParserRepository;
 use yii\console\Controller;
 use yii\console\ExitCode;
 use yii\helpers\ArrayHelper;
+use app\entities\mongo\News;
 
 
 class ParserController extends Controller
 {
     public $repository;
     public $service;
+    public $patterns;
 
     public function __construct(
         string $id,
@@ -25,6 +28,7 @@ class ParserController extends Controller
         parent::__construct($id, $module, $config);
         $this->repository=$repository;
         $this->service=$service;
+
     }
 
     public function actionIndex()
@@ -32,12 +36,11 @@ class ParserController extends Controller
 
         $links=$this->repository->get();
         $links_ids=ArrayHelper::getColumn($links,'id');
+
         foreach ($links as $link)
         {
-            $news = $this->XmlFile($link->url);
-            foreach ($news as $new){
-                var_dump($new->item);
-            }
+            $xml=$this->XmlFile($link->url);
+            $arraySave=$this->service->feed($xml->channel);
         }
     }
 
@@ -51,8 +54,13 @@ class ParserController extends Controller
                 $errors[]=$er;
             }
             libxml_clear_errors();
-
         }
         return simplexml_load_file($files);
     }
+
+
+
+
+
+
 }

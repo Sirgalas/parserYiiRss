@@ -50,13 +50,7 @@ class m180915_145849_init extends Migration
             'id'=>$this->primaryKey(),
             'title'=>$this->string()->notNull(),
             'link'=>$this->string()->notNull(),
-            'description'=>$this->string(),
-            'author'=>$this->string(),
-            'comments'=>$this->string(),
-            'enclosure'=>$this->string(),
-            'guid'=>$this->string(),
-            'pubDate'=>$this->dateTime(),
-            'source'=>$this->string()
+            'description'=>$this->string()->notNull(),
         ],$tableOptions);
 
         $this->createTable('{{%category}}',[

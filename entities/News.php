@@ -12,12 +12,7 @@ use Yii;
  * @property string $title
  * @property string $link
  * @property string $description
- * @property string $author
- * @property string $comments
- * @property string $enclosure
- * @property string $guid
- * @property string $pubDate
- * @property string $source
+ * @property boolean $is_active
  *
  * @property NewsCategory[] $newsCategories
  */
@@ -30,11 +25,6 @@ class News extends \yii\db\ActiveRecord
         $news->title=$form->title;
         $news->link=$form->link;
         $news->description=$form->description;
-        $news->author=$form->author;
-        $news->comments=$form->comments;
-        $news->enclosure=$form->enclosure;
-        $news->guid=$form->guid;
-        $news->pubDate=$form->pubDate;
         return $news;
     }
 
@@ -44,11 +34,7 @@ class News extends \yii\db\ActiveRecord
         $this->title=$form->title;
         $this->link=$form->link;
         $this->description=$form->description;
-        $this->author=$form->author;
-        $this->comments=$form->comments;
-        $this->enclosure=$form->enclosure;
-        $this->guid=$form->guid;
-        $this->pubDate=$form->pubDate;
+
     }
     /**
      * {@inheritdoc}
@@ -66,4 +52,6 @@ class News extends \yii\db\ActiveRecord
     {
         return $this->hasMany(NewsCategory::className(), ['new_id' => 'id']);
     }
+
+
 }

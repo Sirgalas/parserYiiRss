@@ -6,7 +6,7 @@
  * Time: 19:32
  */
 
-namespace app\forms;
+namespace app\forms\elastic;
 use app\entities\News;
 use yii\base\Model;
 
@@ -16,7 +16,6 @@ use yii\base\Model;
  * @property string $title
  * @property string $link
  * @property string $description
- *
  */
 class NewsForm extends Model
 {
@@ -25,20 +24,12 @@ class NewsForm extends Model
     public $link;
     public $description;
 
-    public function __construct(News $news=null,$config = [])
+    public function __construct(string  $title,string $link,string $description,$config = [])
     {
         parent::__construct($config);
-        if($news){
-            $this->title=$news->title;
-            $this->link=$news->link;
-            $this->description=$news->description;
-            $this->author=$news->author;
-            $this->comments=$news->comments;
-            $this->enclosure=$news->enclosure;
-            $this->guid=$news->guid;
-            $this->source=$news->source;
-            $this->pubDate=$news->pubDate;
-        }
+            $this->title=$title;
+            $this->link=$link;
+            $this->description=$description;
     }
 
     /**
@@ -62,6 +53,12 @@ class NewsForm extends Model
             'title' => 'Заголовок',
             'link' => 'Ссылка',
             'description' => 'Описание',
+            'author' => 'Автор',
+            'comments' => 'Коментарии',
+            'enclosure' => 'Медиа объект ',
+            'guid' => 'Guid',
+            'pubDate' => 'Дата опубликования',
+            'source' => 'Ссылка на канал',
         ];
     }
 

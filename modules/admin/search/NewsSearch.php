@@ -19,7 +19,8 @@ class NewsSearch extends News
     {
         return [
             [['id'], 'integer'],
-            [['title', 'link', 'description', 'author', 'comments', 'enclosure', 'guid', 'pubDate', 'source'], 'safe'],
+            [['title', 'link', 'description'], 'safe'],
+            ['is_active','boolean']
         ];
     }
 
@@ -60,17 +61,14 @@ class NewsSearch extends News
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'pubDate' => $this->pubDate,
+            'is_active' =>$this->is_active
+
         ]);
 
         $query->andFilterWhere(['like', 'title', $this->title])
             ->andFilterWhere(['like', 'link', $this->link])
-            ->andFilterWhere(['like', 'description', $this->description])
-            ->andFilterWhere(['like', 'author', $this->author])
-            ->andFilterWhere(['like', 'comments', $this->comments])
-            ->andFilterWhere(['like', 'enclosure', $this->enclosure])
-            ->andFilterWhere(['like', 'guid', $this->guid])
-            ->andFilterWhere(['like', 'source', $this->source]);
+            ->andFilterWhere(['like', 'description', $this->description]);
+
 
         return $dataProvider;
     }

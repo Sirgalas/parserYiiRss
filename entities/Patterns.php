@@ -53,4 +53,8 @@ class Patterns extends \yii\db\ActiveRecord
      * {@inheritdoc}
      */
 
+    public static function getAll()
+    {
+        return self::find()->all();
+    }
 }

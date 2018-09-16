@@ -1,5 +1,5 @@
 <?php
-
+use app\entities\mongo\News;
 /* @var $this yii\web\View */
 
 $this->title = 'My Yii Application';
