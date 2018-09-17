@@ -34,6 +34,7 @@
                     ['label' => 'Шаблоны', 'icon' => 'fa fa-clone', 'url' => ['/admin/patterns']],
                     ['label' => 'Ссылки', 'icon' => 'fa fa-rss', 'url' => ['/admin/link']],
                     ['label' => 'Категории', 'icon' => 'fa fa-bars', 'url' => ['/admin/category']],
+                    ['label' => 'Добавить новости', 'icon' => 'fa fa-bars', 'url' => ['/admin/add-news']],
 
                 ],
             ]

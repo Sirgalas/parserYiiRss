@@ -1,17 +1,15 @@
 <?php
 
 
-namespace app\commands;
+namespace app\modules\admin\controllers;
 
-
+use yii\web\Controller;
 use app\services\parser\ParserService;
 use app\repositories\parser\ParserRepository;
-use yii\console\Controller;
 
-
-
-class ParserController extends Controller
+class AddNewsController extends Controller
 {
+
     public $repository;
     public $service;
     public $patterns;
@@ -28,22 +26,18 @@ class ParserController extends Controller
         $this->service=$service;
 
     }
-
     public function actionIndex()
     {
 
         $links=$this->repository->get();
-        //$links_ids=ArrayHelper::getColumn($links,'id');
-
         foreach ($links as $link)
         {
             $xml=$this->XmlFile($link->url);
             $arraySave=$this->service->feed($xml->channel);
             $this->service->saveAll($arraySave);
         }
-       /* Link::updateAll(
-            ['parser_date'=>date('z',time())],
-            ['in','id',$links_ids]);    */
+        \Yii::$app->session->setFlash('success','Новоcти добавлены');
+        return $this->redirect('/admin/site');
     }
 
     private function XmlFile($files){
@@ -59,10 +53,4 @@ class ParserController extends Controller
         }
         return simplexml_load_file($files);
     }
-
-
-
-
-
-
 }
