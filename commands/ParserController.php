@@ -36,7 +36,7 @@ class ParserController extends Controller
     {
 
         $links=$this->repository->get();
-        $links_ids=ArrayHelper::getColumn($links,'id');
+        //$links_ids=ArrayHelper::getColumn($links,'id');
 
         foreach ($links as $link)
         {
@@ -44,9 +44,9 @@ class ParserController extends Controller
             $arraySave=$this->service->feed($xml->channel);
             $this->service->saveAll($arraySave);
         }
-        Link::updateAll(
+       /* Link::updateAll(
             ['parser_date'=>date('z',time())],
-            ['in','id',$links_ids]);
+            ['in','id',$links_ids]);    */
     }
 
     private function XmlFile($files){
