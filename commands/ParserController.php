@@ -3,6 +3,7 @@
 
 namespace app\commands;
 
+use app\entities\Link;
 use app\entities\Patterns;
 use app\services\parser\ParserService;
 use app\repositories\parser\ParserRepository;
@@ -43,6 +44,9 @@ class ParserController extends Controller
             $arraySave=$this->service->feed($xml->channel);
             $this->service->saveAll($arraySave);
         }
+        Link::updateAll(
+            ['parser_date'=>date('z',time())],
+            ['in','id',$links_ids]);
     }
 
     private function XmlFile($files){
