@@ -50,7 +50,7 @@ class ParserService
         if ( !is_array($needles) )
             return false;
         foreach ($needles as $str) {
-            if($pos = strpos($haystack, $str))
+            if($pos = strpos($haystack, " ".$str." "))
                 return true;
         }
         return false;
